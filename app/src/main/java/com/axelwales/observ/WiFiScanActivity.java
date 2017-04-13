@@ -8,11 +8,27 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.view.View;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WiFiScanActivity extends AppCompatActivity {
 
@@ -20,6 +36,11 @@ public class WiFiScanActivity extends AppCompatActivity {
     private WifiManager mngr;
     ArrayList<RSSResult> resultList;
     ListView resultListView;
+    private EditText xInput;
+    private EditText yInput;
+    private Button storeButton;
+    private Button scanButton;
+    private RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,15 +64,64 @@ public class WiFiScanActivity extends AppCompatActivity {
             mngr.setWifiEnabled(true);
         }
 
-        scan();
+        queue = Volley.newRequestQueue(this);
+        xInput = (EditText) findViewById(R.id.xInput);
+        yInput = (EditText) findViewById(R.id.yInput);
+        storeButton = (Button) findViewById(R.id.storeButton);
+        scanButton = (Button) findViewById(R.id.scanButton);
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scan();
+            }
+        });
+        storeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                store();
+            }
+        });
     }
 
     private void scan() {
         boolean b = mngr.startScan();
     }
 
-    private void updateList() {
+    private void store() {
+        final String xPos = xInput.getText().toString().trim();
+        final String yPos = yInput.getText().toString().trim();
+        final String fingerprints = "";
+        //need to serialize whatever the scan results are in
 
+        String url = "https://www.whateveryourpythonanywherethingis.com/";
+
+        Map<String, String> params = new HashMap();
+        params.put("lat", xPos);
+        params.put("lng", yPos);
+        params.put("fingerprint_set", fingerprints);
+
+        JSONObject parameters = new JSONObject(params);
+
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                parameters,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        queue.add(jsonRequest);
     }
 }
 
