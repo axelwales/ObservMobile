@@ -23,6 +23,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -88,19 +90,31 @@ public class WiFiScanActivity extends AppCompatActivity {
     }
 
     private void store() {
+        String url = "https://www.whateveryourpythonanywherethingis.com/";
         final String xPos = xInput.getText().toString().trim();
         final String yPos = yInput.getText().toString().trim();
-        final String fingerprints = "";
-        //need to serialize whatever the scan results are in
+        JSONArray fingerprints = new JSONArray();
 
-        String url = "https://www.whateveryourpythonanywherethingis.com/";
+        for (RSSResult result : resultList) {
+            JSONObject AP = new JSONObject();
+            try {
+                AP.put("bssid", result.getBSSID());
+                AP.put("rssi", result.getRSSI());
+            }
+            catch (JSONException e) {}
+
+            fingerprints.put(AP);
+        }
 
         Map<String, String> params = new HashMap();
         params.put("lat", xPos);
         params.put("lng", yPos);
-        params.put("fingerprint_set", fingerprints);
-
         JSONObject parameters = new JSONObject(params);
+
+        try {
+            parameters.put("fingerprint_set", fingerprints);
+        }
+        catch (JSONException e) {}
 
         JsonObjectRequest jsonRequest = new JsonObjectRequest(
                 Request.Method.POST,
@@ -156,5 +170,13 @@ class RSSResult {
     @Override
     public String toString() {
         return "BSSID: " + this.fullResult.BSSID + " RSSI: " + this.fullResult.level;
+    }
+
+    public String getBSSID() {
+        return this.fullResult.BSSID;
+    }
+
+    public double getRSSI() {
+        return this.fullResult.level;
     }
 }
