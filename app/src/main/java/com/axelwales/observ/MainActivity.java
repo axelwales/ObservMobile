@@ -3,7 +3,7 @@ package com.axelwales.observ;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.widget.Button;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -19,9 +19,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.scanWiFi);
+        final Button scanButton = (Button) findViewById(R.id.scanButton);
         final Context activity = this;
-        fab.setOnClickListener(new View.OnClickListener() {
+        scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(activity, WiFiScanActivity.class);
