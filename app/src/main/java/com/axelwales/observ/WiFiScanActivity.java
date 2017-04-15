@@ -1,5 +1,6 @@
 package com.axelwales.observ;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +39,7 @@ public class WiFiScanActivity extends AppCompatActivity {
     private WifiScanReceiver wifiReciever;
     private WifiManager mngr;
     ArrayList<RSSResult> resultList;
+    ArrayAdapter<RSSResult> resultsAdapter;
     ListView resultListView;
     private EditText xInput;
     private EditText yInput;
@@ -51,8 +54,8 @@ public class WiFiScanActivity extends AppCompatActivity {
 
         mngr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-        ArrayList<RSSResult> resultList = new ArrayList<>();
-        ArrayAdapter<RSSResult> resultsAdapter =
+        resultList = new ArrayList<>();
+        resultsAdapter =
                 new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, resultList);
 
         this.resultListView = (ListView) findViewById(R.id.rssList);
@@ -90,16 +93,22 @@ public class WiFiScanActivity extends AppCompatActivity {
     }
 
     private void store() {
-        String url = "https://www.whateveryourpythonanywherethingis.com/";
+        String url = "http://axelwales.pythonanywhere.com/fingerprints";
         final String xPos = xInput.getText().toString().trim();
         final String yPos = yInput.getText().toString().trim();
         JSONArray fingerprints = new JSONArray();
+        ArrayAdapter<RSSResult> adapter = this.resultsAdapter;
 
-        for (RSSResult result : resultList) {
+        for (int i = 0; i < adapter.getCount(); i++) {
             JSONObject AP = new JSONObject();
+            JSONObject APInfo = new JSONObject();
             try {
-                AP.put("bssid", result.getBSSID());
-                AP.put("rssi", result.getRSSI());
+                APInfo.put("bssid", adapter.getItem(i).getBSSID());
+                APInfo.put("rssi", adapter.getItem(i).getRSSI());
+            }
+            catch (JSONException e) {}
+            try {
+                AP.put("access_point", APInfo);
             }
             catch (JSONException e) {}
 
@@ -107,8 +116,8 @@ public class WiFiScanActivity extends AppCompatActivity {
         }
 
         Map<String, String> params = new HashMap();
-        params.put("lat", xPos);
-        params.put("lng", yPos);
+        params.put("lat", yPos);
+        params.put("lng", xPos);
         JSONObject parameters = new JSONObject(params);
 
         try {
@@ -123,14 +132,14 @@ public class WiFiScanActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
-                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
                     }
                 }
         );
