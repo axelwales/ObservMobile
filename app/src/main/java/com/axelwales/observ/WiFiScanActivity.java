@@ -94,36 +94,28 @@ public class WiFiScanActivity extends AppCompatActivity {
 
     private void store() {
         String url = "http://axelwales.pythonanywhere.com/map/fingerprints/";
+
         final String xPos = xInput.getText().toString().trim();
         final String yPos = yInput.getText().toString().trim();
+        JSONObject parameters = new JSONObject();
         JSONArray fingerprints = new JSONArray();
         ArrayAdapter<RSSResult> adapter = this.resultsAdapter;
 
-        for (int i = 0; i < adapter.getCount(); i++) {
-            JSONObject AP = new JSONObject();
-            JSONObject APInfo = new JSONObject();
-            try {
-                APInfo.put("bssid", adapter.getItem(i).getBSSID());
-                APInfo.put("rssi", adapter.getItem(i).getRSSI());
-            }
-            catch (JSONException e) {}
-            try {
-                AP.put("access_point", APInfo);
-            }
-            catch (JSONException e) {}
-
-            fingerprints.put(AP);
-        }
-
-        Map<String, String> params = new HashMap();
-        params.put("lat", yPos);
-        params.put("lng", xPos);
-        JSONObject parameters = new JSONObject(params);
-
         try {
+            parameters.put("lat", yPos);
+            parameters.put("lng", xPos);
+            for (int i = 0; i < adapter.getCount(); i++) {
+                JSONObject AP = new JSONObject();
+                JSONObject APInfo = new JSONObject();
+
+                APInfo.put("bssid", adapter.getItem(i).getBSSID());
+                AP.put("rssi", adapter.getItem(i).getRSSI());
+                AP.put("access_point", APInfo);
+
+                fingerprints.put(AP);
+            }
             parameters.put("fingerprint_set", fingerprints);
-        }
-        catch (JSONException e) {}
+        } catch (JSONException e) {}
 
         JsonObjectRequest jsonRequest = new JsonObjectRequest(
                 Request.Method.POST,
