@@ -93,7 +93,7 @@ public class WiFiScanActivity extends AppCompatActivity {
     }
 
     private void store() {
-        String url = "http://axelwales.pythonanywhere.com/fingerprints";
+        String url = "http://axelwales.pythonanywhere.com/map/fingerprints/";
         final String xPos = xInput.getText().toString().trim();
         final String yPos = yInput.getText().toString().trim();
         JSONArray fingerprints = new JSONArray();
