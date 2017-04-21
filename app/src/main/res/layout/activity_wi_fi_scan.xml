@@ -10,7 +10,7 @@
         android:id="@+id/scanButton"
         android:layout_width="114dp"
         android:layout_height="69dp"
-        android:layout_marginRight="66dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="444dp"
         android:text="Scan"
         app:layout_constraintRight_toRightOf="parent"
@@ -25,34 +25,48 @@
         tools:ignore="HardcodedText,RtlHardcoded"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="444dp"
-        android:layout_marginLeft="66dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/estimateButton"
+        app:layout_constraintRight_toLeftOf="@+id/scanButton"
+        android:layout_marginRight="8dp" />
+
+    <Button
+        android:id="@+id/estimateButton"
+        android:layout_width="114dp"
+        android:layout_height="69dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="444dp"
+        android:text="Estimate"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText,RtlHardcoded" />
 
     <EditText
         android:id="@+id/xInput"
-        android:layout_width="127dp"
-        android:layout_height="48dp"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="30dp"
         android:ems="10"
         android:inputType="number"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="63dp"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="RtlHardcoded" />
 
     <EditText
         android:id="@+id/yInput"
-        android:layout_width="127dp"
-        android:layout_height="48dp"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="112dp"
+        android:layout_marginTop="30dp"
         android:ems="10"
         android:inputType="number"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toRightOf="@+id/yLabel"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="241dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        tools:ignore="RtlHardcoded"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent" />
+        tools:ignore="RtlHardcoded" />
 
     <TextView
         android:id="@+id/xLabel"
@@ -62,7 +76,7 @@
         android:textSize="30sp"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="30dp"
-        android:layout_marginLeft="33dp"
+        android:layout_marginLeft="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         tools:ignore="HardcodedText,RtlHardcoded" />
 
@@ -74,7 +88,7 @@
         android:textSize="30sp"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="30dp"
-        android:layout_marginLeft="204dp"
+        android:layout_marginLeft="138dp"
         app:layout_constraintLeft_toLeftOf="parent"
         tools:ignore="HardcodedText,RtlHardcoded" />
 
@@ -89,5 +103,26 @@
         tools:ignore="RtlHardcoded"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintTop_creator="1" />
+
+    <TextView
+        android:id="@+id/directionLabel"
+        android:layout_width="99dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="30dp"
+        android:text="Direction"
+        android:textSize="32sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/degreeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="42dp"
+        android:layout_marginTop="16dp"
+        android:text="Degrees"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
