@@ -160,6 +160,7 @@ public class WiFiScanActivity extends AppCompatActivity {
 
         final String xPos = xInput.getText().toString().trim();
         final String yPos = yInput.getText().toString().trim();
+        final String direction = directionLabel.getText().toString().toLowerCase().trim();
         JSONArray fingerprints = new JSONArray();
         JSONObject parameters = new JSONObject();
 
@@ -167,15 +168,16 @@ public class WiFiScanActivity extends AppCompatActivity {
 
         try {
             for (int i = 0; i < adapter.getCount(); i++) {
-                JSONObject AP = new JSONObject();
-                JSONObject APInfo = new JSONObject();
+                JSONObject fingerprint = new JSONObject();
+                JSONObject accessPoint = new JSONObject();
 
-                APInfo.put("bssid", adapter.getItem(i).getBSSID());
-                AP.put("access_point", APInfo);
-                AP.put("rssi", adapter.getItem(i).getRSSI());
-                fingerprints.put(AP);
+                accessPoint.put("bssid", adapter.getItem(i).getBSSID());
+                fingerprint.put("access_point", accessPoint);
+                fingerprint.put("rssi", adapter.getItem(i).getRSSI());
+                fingerprint.put("direction", direction);
+                fingerprints.put(fingerprint);
             }
-            parameters.put("lat", xPos);
+            parameters.put("lat", yPos);
             parameters.put("lng", xPos);
             parameters.put("fingerprint_set", fingerprints);
         } catch (JSONException e) {}
