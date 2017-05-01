@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -134,6 +135,8 @@ public class WiFiScanActivity extends AppCompatActivity {
         boolean b = mngr.startScan();
         xInput.setTextColor(Color.BLACK);
         yInput.setTextColor(Color.BLACK);
+        xInput.setText("");
+        yInput.setText("");
 
         final float[] R = new float[9];
         final float[] orientation = new float[3];
@@ -168,6 +171,7 @@ public class WiFiScanActivity extends AppCompatActivity {
 
         try {
             for (int i = 0; i < adapter.getCount(); i++) {
+
                 JSONObject fingerprint = new JSONObject();
                 JSONObject accessPoint = new JSONObject();
 
@@ -190,7 +194,7 @@ public class WiFiScanActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("response", response.toString());
-                        Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "success" + " " + xPos + " " + yPos, Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -207,8 +211,8 @@ public class WiFiScanActivity extends AppCompatActivity {
     }
 
     private void estimate() {
-        scan();
-        String url = "wherever the algo url is";
+        String url = "http://axelwales.pythonanywhere.com/map/location/";
+        //final String direction = directionLabel.getText().toString().toLowerCase().trim();
         JSONArray fingerprints = new JSONArray();
         JSONObject parameters = new JSONObject();
         ArrayAdapter<RSSResult> adapter = this.resultsAdapter;
@@ -221,6 +225,7 @@ public class WiFiScanActivity extends AppCompatActivity {
                 fingerprints.put(AP);
             }
             parameters.put("fingerprint_set", fingerprints);
+            //parameters.put("direction", direction);
         } catch (JSONException e) {}
 
         JsonObjectRequest jsonRequest = new JsonObjectRequest(
@@ -231,10 +236,18 @@ public class WiFiScanActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("response", response.toString());
+                        double x = 0;
+                        double y = 0;
+                        try {
+                            x = response.getDouble("lng");
+                            y = response.getDouble("lat");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         xInput.setTextColor(Color.RED);
                         yInput.setTextColor(Color.RED);
-                        xInput.setText("success");//not sure how the response is formatted yet
-                        yInput.setText("success");//not sure how the response is formatted yet
+                        xInput.setText(Double.toString(x));
+                        yInput.setText(Double.toString(y));
                     }
                 },
                 new Response.ErrorListener() {
@@ -246,7 +259,10 @@ public class WiFiScanActivity extends AppCompatActivity {
                     }
                 }
         );
-
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+                10000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(jsonRequest);
     }
 }
